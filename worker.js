@@ -2353,83 +2353,22 @@ var qrcode = function() {
 // ---------------------------------------------------------------------
 // qrcode-generator Library End
 // =====================================================================
-
-// =================================================================
-//  GLOBAL UI COMPONENTS & UTILITIES 
-// =================================================================
-
-// =====================================================================
-// qrcode-generator Library Start
-// 将你提供的 qrcode-generator.js 的所有内容粘贴到这里
-// 注意：原文件末尾的模块导出代码需要删除或注释掉
-// ---------------------------------------------------------------------
-
-// ... (粘贴 qrcode-generator 库的全部代码，直到 multibyte support 部分结束) ...
-
-
-// multibyte support - 确保这部分也包含在粘贴的代码中
-!function() {
-
-  qrcode.stringToBytesFuncs['UTF-8'] = function(s) {
-    // http://stackoverflow.com/questions/18729405/how-to-convert-utf8-string-to-byte-array
-    function toUTF8Array(str) {
-      var utf8 = [];
-      for (var i=0; i < str.length; i++) {
-        var charcode = str.charCodeAt(i);
-        if (charcode < 0x80) utf8.push(charcode);
-        else if (charcode < 0x800) {
-          utf8.push(0xc0 | (charcode >> 6),
-              0x80 | (charcode & 0x3f));
-        }
-        else if (charcode < 0xd800 || charcode >= 0xe000) {
-          utf8.push(0xe0 | (charcode >> 12),
-              0x80 | ((charcode>>6) & 0x3f),
-              0x80 | (charcode & 0x3f));
-        }
-        // surrogate pair
-        else {
-          i++;
-          // UTF-16 encodes 0x10000-0x10FFFF by
-          // subtracting 0x10000 and splitting the
-          // 20 bits of 0x0-0xFFFFF into two halves
-          charcode = 0x10000 + (((charcode & 0x3ff)<<10)
-            | (str.charCodeAt(i) & 0x3ff));
-          utf8.push(0xf0 | (charcode >>18),
-              0x80 | ((charcode>>12) & 0x3f),
-              0x80 | ((charcode>>6) & 0x3f),
-              0x80 | (charcode & 0x3f));
-        }
-      }
-      return utf8;
-    };
-    return toUTF8Array(s);
-  };
-
-}();
-
-// ---------------------------------------------------------------------
-// qrcode-generator Library End
-// =====================================================================
-
 // =================================================================
 //  GLOBAL UI COMPONENTS & UTILITIES (从你的 All-in-One Proxy Tool 复制)
 // =================================================================
-
 const newGlobalStyle = `
 html { font-size: 87.5%; }
 body, html { margin: 0; padding: 0; min-height: 100%; background-color: #fff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-
 .container {
   width: 100%;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start; /* Consistent for both 页面 */
   align-items: center;
   padding: 40px 20px;
   box-sizing: border-box;
 }
-
 .content-group {
   width: 100%;
   max-width: 700px;
@@ -2437,10 +2376,8 @@ body, html { margin: 0; padding: 0; min-height: 100%; background-color: #fff; fo
   z-index: 10;
   box-sizing: border-box;
 }
-
 .profile-name { font-size: 2.2rem; color: #3d474d; margin-bottom: 10px; font-weight: bold;}
 .profile-quote { color: #89949B; margin-bottom: 27px; min-height: 1.2em; }
-
 .nav-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 27px; }
 .nav-btn {
   padding: 8px 16px; text-align: center; background: #E8EBED; border: 2px solid #89949B;
@@ -2452,7 +2389,6 @@ body, html { margin: 0; padding: 0; min-height: 100%; background-color: #fff; fo
 .nav-btn:disabled { opacity: 0.6; cursor: not-allowed;}
 .nav-btn.primary { background-color: #5a666d; color: white; border-color: #5a666d;}
 .nav-btn.primary:hover:not(:disabled) { background-color: #3d474d; }
-
 .card {
   background: #f8f9fa; border: 1px solid #E8EBED; border-radius: 8px;
   padding: 24px; margin-bottom: 24px; text-align: left;
@@ -2476,7 +2412,6 @@ textarea:focus, input[type="text"]:focus, input[type="number"]:focus, select:foc
 .radio-group input[type="radio"]:checked + span { background: #89949B; color: white; }
 .radio-group label:hover { background: #d1d5d8; }
 .radio-group input[type="radio"]:checked + span:hover { background: #89949B; color: white; }
-
 .info-box, .config-link-box {
   background-color: #e8ebed; color: #5a666d; border-left: 4px solid #89949B;
   padding: 12px 16px; border-radius: 4px; font-size: 0.85rem; text-align: left;
@@ -2485,14 +2420,12 @@ textarea:focus, input[type="text"]:focus, input[type="number"]:focus, select:foc
 .info-box a, .config-link-box a { color: #3d474d; font-weight: bold; text-decoration: none; word-break: break-all; }
 .info-box a:hover, .config-link-box a:hover { text-decoration: underline; }
 .config-link-box button { padding: 4px 8px; font-size: 0.8rem; height: auto; border-radius: 3px; margin-left:10px; vertical-align: middle;}
-
 .footer {
   margin-top: 40px; text-align: center; color: #89949B; font-size: 0.8rem;
 }
 .footer a { color: #89949B; text-decoration: none; }
 .footer a:hover { text-decoration: underline; }
 .hidden { display: none; }
-
 #toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
 .toast {
     display: flex; align-items: center; padding: 12px 18px; border-radius: 4px;
@@ -2504,7 +2437,6 @@ textarea:focus, input[type="text"]:focus, input[type="number"]:focus, select:foc
 .toast svg { margin-right: 10px; width: 20px; height: 20px; }
 @keyframes slideIn { to { opacity: 1; transform: translateX(0); } }
 @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; transform: translateX(100%); } }
-
 .loader {
     width: 16px; height: 16px; border: 2px solid white;
     border-bottom-color: transparent; border-radius: 50%;
@@ -2512,7 +2444,6 @@ textarea:focus, input[type="text"]:focus, input[type="number"]:focus, select:foc
     animation: rotation 1s linear infinite; margin-right: 8px;
 }
 @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
 /* =================================================================
  *  [新增] 移动端响应式布局样式
  * ================================================================= */
@@ -2574,14 +2505,11 @@ textarea:focus, input[type="text"]:focus, input[type="number"]:focus, select:foc
       from { opacity: 1; }
       to { opacity: 0; transform: translateY(-20px); }
     }
-
 }
 /* =================================================================
  *  响应式布局样式结束
  * ================================================================= */
 `;
-
-
 // 二维码生成页面的 HTML 内容 (更新为新的 UI 风格，增加链接显示)
 const qrGeneratePageHtml = `
 <!DOCTYPE html>
@@ -2618,12 +2546,10 @@ const qrGeneratePageHtml = `
         <div class="content-group">
             <h1 class="profile-name">二维码生成器</h1>
             <p class="profile-quote">输入内容，即时生成 GIF 格式的二维码。</p>
-
             <div class="nav-grid">
                 <a href="/" class="nav-btn primary">二维码生成</a>
-                <!-- 如果有其他页面，可以在这里添加 -->
+                <a href="/api-docs" class="nav-btn">API 文档</a>
             </div>
-
             <div class="card">
                 <h2>1. 输入内容</h2>
                 <div class="form-group">
@@ -2631,7 +2557,6 @@ const qrGeneratePageHtml = `
                     <textarea id="qrText" name="text" placeholder="例如: Hello Cloudflare! 或 https://example.com" required rows="4"></textarea>
                 </div>
             </div>
-
             <div class="card">
                 <h2>2. 高级选项</h2>
                  <div class="form-group">
@@ -2658,7 +2583,6 @@ const qrGeneratePageHtml = `
             </div>
             
             <button id="generateQrBtn" class="nav-btn primary" style="width:100%; padding: 12px;">生成二维码</button>
-
             <div class="card qr-placeholder">
                 <p id="qrPlaceholderText">生成的二维码将显示在这里。</p>
                 <img id="qrCodeImage" src="" alt="生成的二维码" style="display: none;">
@@ -2668,13 +2592,11 @@ const qrGeneratePageHtml = `
                     <button class="nav-btn" onclick="copyQrImageUrl()">复制</button>
                 </div>
             </div>
-
             <footer class="footer">
-                <p>Powered by Cloudflare Workers | <a href="https://www.yangzihome.space/security-statement" target="_blank" rel="noopener noreferrer">安全声明</a></p>
+                <p>Powered by YZFN | <a href="https://www.yangzihome.space/security-statement" target="_blank" rel="noopener noreferrer">安全声明</a></p>
             </footer>
         </div>
     </div>
-
     <script>
         // Start of global utility functions (for Toast & Loading) - Copied from your proxy tool
         const toastIcons = {
@@ -2702,7 +2624,6 @@ const qrGeneratePageHtml = `
             }
         }
         // End of global utility functions
-
         // QRCode specific JS
         const generateQrBtn = document.getElementById('generateQrBtn'); 
         const qrText = document.getElementById('qrText');
@@ -2719,28 +2640,23 @@ const qrGeneratePageHtml = `
             const button = this;
             const originalText = button.innerHTML;
             setButtonLoading(button, true, originalText);
-
             const text = qrText.value;
             if (!text.trim()) {
                 showToast('请输入内容或 URL！', 'error');
                 setButtonLoading(button, false, originalText);
                 return;
             }
-
             const cellSize = cellSizeInput.value;
             const margin = marginInput.value;
             const errorCorrectionLevel = errorCorrectionLevelSelect.value;
             const typeNumber = typeNumberInput.value;
-
             // 构建 API 请求 URL
             const workerDomain = window.location.origin; // 获取当前 Worker 的域名
             const apiUrl = \`\${workerDomain}/qr?text=\${encodeURIComponent(text)}&cellSize=\${cellSize}&margin=\${margin}&errorCorrectionLevel=\${errorCorrectionLevel}&typeNumber=\${typeNumber}\`;
-
             qrCodeImage.style.display = 'none';
             qrPlaceholderText.style.display = 'block';
             qrPlaceholderText.textContent = '正在生成二维码...';
             qrImageUrlBox.classList.add('hidden'); // 隐藏旧的 URL
-
             try {
                 const response = await fetch(apiUrl);
                 if (!response.ok) {
@@ -2781,7 +2697,6 @@ const qrGeneratePageHtml = `
                 setButtonLoading(button, false, originalText);
             }
         });
-
         // 复制二维码图片 URL 到剪贴板
         window.copyQrImageUrl = function() {
             const urlToCopy = qrImageUrl.href;
@@ -2795,7 +2710,6 @@ const qrGeneratePageHtml = `
                 showToast('复制失败。', 'error');
             });
         };
-
         // 页面加载后自动生成一个示例二维码
         window.addEventListener('load', () => {
              qrText.value = "https://qrcode.api.yangzihome.space/"; // 默认填入一个示例
@@ -2806,82 +2720,234 @@ const qrGeneratePageHtml = `
 </body>
 </html>
 `;
-
-
+// API 使用说明页面 HTML
+const apiPageHtmlContent = `
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>二维码生成器 - API 文档</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="https://s3.yangzihome.space/logo.ico" type="image/x-icon">
+    <style>${newGlobalStyle}</style>
+    <style>
+        .api-docs-content pre {
+            background-color: #eee;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: 'SF Mono', 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #3d474d;
+        }
+        .api-docs-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+        .api-docs-content th, .api-docs-content td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .api-docs-content th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .api-docs-content code {
+            background-color: #eaeaea;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: 'SF Mono', 'Courier New', monospace;
+        }
+        .important-note {
+            color: #d9534f;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="content-group">
+            <h1 class="profile-name">二维码生成器 API 文档</h1>
+            <p class="profile-quote">通过 HTTP 请求程序化生成高质量 GIF 格式二维码。</p>
+            <div class="nav-grid">
+                <a href="/" class="nav-btn">二维码生成</a>
+                <a href="/api-docs" class="nav-btn primary">API 文档</a>
+            </div>
+            <div class="card api-docs-content">
+                <h2>API 端点</h2>
+                <p>二维码生成服务的基础 URL：</p>
+                <pre><code>https://<span class="worker-domain-placeholder">your-worker-domain.com</span>/qr</code></pre>
+                <h2>请求方法</h2>
+                <p><code>GET</code></p>
+                <h2>查询参数</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>参数名</th>
+                            <th>是否必须</th>
+                            <th>类型</th>
+                            <th>默认值</th>
+                            <th>说明</th>
+                            <th>合法值范围</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>text</code> 或 <code>url</code></td>
+                            <td>**是**</td>
+                            <td>String</td>
+                            <td>无</td>
+                            <td>要编码的文本内容或 URL。<strong>请务必进行 URL 编码 (<code>encodeURIComponent</code>)</strong>。</td>
+                            <td>任何字符串</td>
+                        </tr>
+                        <tr>
+                            <td><code>cellSize</code></td>
+                            <td>否</td>
+                            <td>Integer</td>
+                            <td><code>4</code></td>
+                            <td>每个二维码“模块”（小方块）的像素大小。值越大，生成的图片尺寸越大。</td>
+                            <td><code>1</code> 到 <code>20</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>margin</code></td>
+                            <td>否</td>
+                            <td>Integer</td>
+                            <td><code>0</code></td>
+                            <td>二维码图案周围的空白边距，以模块数量为单位。<code>0</code> 表示无额外边距。</td>
+                            <td><code>0</code> 到 <code>10</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>errorCorrectionLevel</code></td>
+                            <td>否</td>
+                            <td>String</td>
+                            <td><code>L</code></td>
+                            <td>二维码的容错级别，指定二维码可被损坏或遮挡而仍然可扫描的程度。</td>
+                            <td><code>'L'</code> (低), <code>'M'</code> (中), <code>'Q'</code> (大部分), <code>'H'</code> (高)</td>
+                        </tr>
+                        <tr>
+                            <td><code>typeNumber</code></td>
+                            <td>否</td>
+                            <td>Integer</td>
+                            <td><code>0</code></td>
+                            <td>二维码的版本号 (<code>1</code> 到 <code>40</code>)。<code>0</code> 表示由 API 自动选择最小的、能容纳所有数据的版本号。</td>
+                            <td><code>0</code> 到 <code>40</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h2>响应</h2>
+                <ul>
+                    <li>**成功**: 返回 <code>image/gif</code> 类型的 GIF 格式二维码图片。</li>
+                    <li>**失败**: 返回 <code>application/json</code> 类型的错误信息。</li>
+                </ul>
+                <h3>成功响应示例 (HTTP 200 OK)</h3>
+                <p>请求：</p>
+                <pre><code>GET https://<span class="worker-domain-placeholder">your-worker-domain.com</span>/qr?text=Hello%20API!</code></pre>
+                <p>响应：</p>
+                <pre><code>Content-Type: image/gif
+(Binary GIF image data)</code></pre>
+                <img src="/qr?text=Hello%20API!&cellSize=4&margin=4&errorCorrectionLevel=M" alt="API示例二维码" style="max-width: 200px; height: auto;" />
+                <p><em>上图为使用参数 <code>text=Hello%20API!&cellSize=4&margin=4&errorCorrectionLevel=M</code> 生成的示例。</em></p>
+                <h3>错误响应示例 (HTTP 400 Bad Request)</h3>
+                <p>请求：</p>
+                <pre><code>GET https://<span class="worker-domain-placeholder">your-worker-domain.com</span>/qr</code></pre>
+                <p>响应：</p>
+                <pre><code>HTTP/1.1 400 Bad Request
+Content-Type: application/json
+{
+  "error": "Missing \`text\` or \`url\` parameter"
+}</code></pre>
+                <h3>错误响应示例 (HTTP 500 Internal Server Error)</h3>
+                <p>如果二维码生成过程中发生内部错误 (例如，尝试编码的数据过大导致超出二维码容量)，可能会返回 500 错误：</p>
+                <pre><code>HTTP/1.1 500 Internal Server Error
+Content-Type: application/json
+{
+  "error": "Failed to generate QR code",
+  "details": "code length overflow. (too much data)"
+}</code></pre>
+                <h2>缓存</h2>
+                <p>成功的二维码图片响应会包含 <code>Cache-Control: public, max-age=604800</code> 头，表示图片将在浏览器和 CDN 边缘缓存 7 天（604800 秒），以提高性能并减少 Workers 的调用次数。</p>
+            </div>
+            <footer class="footer">
+                <p>Powered by YZFN | <a href="https://www.yangzihome.space/security-statement" target="_blank" rel="noopener noreferrer">安全声明</a></p>
+            </footer>
+        </div>
+    </div>
+    <script>
+        // 在页面加载后填充 Worker 域名到占位符
+        window.addEventListener('load', () => {
+            const workerDomain = window.location.origin;
+            document.querySelectorAll('.worker-domain-placeholder').forEach(el => {
+                el.textContent = workerDomain.replace('http://', '').replace('https://', '');
+            });
+        });
+    </script>
+</body>
+</html>
+`;
 // Cloudflare Worker API Handler
 export default {
-  async fetch(request, env, ctx) {
-    const url = new URL(request.url);
-
-    // If it's the root path, serve the HTML landing page
-    if (url.pathname === '/' || url.pathname === '') {
-      return new Response(qrGeneratePageHtml, { // 使用新的 HTML 变量
-        headers: { 'content-type': 'text/html;charset=UTF-8' },
-      });
-    }
-
-    // If it's the /qr path, serve the QR code
-    if (url.pathname === '/qr') {
-      const text = url.searchParams.get('text') || url.searchParams.get('url');
-
-      if (!text) {
-        return new Response(
-          JSON.stringify({ error: 'Missing `text` or `url` parameter' }),
-          { status: 400, headers: { 'content-type': 'application/json' } }
-        );
-      }
-
-      // Optional: Get type number, cell size, error correction level from query params
-      // Defaults: typeNumber=0 (auto), errorCorrectionLevel='L', cellSize=4
-      const typeNumber = parseInt(url.searchParams.get('typeNumber') || '0', 10);
-      const errorCorrectionLevel = url.searchParams.get('errorCorrectionLevel') || 'L';
-      const cellSize = parseInt(url.searchParams.get('cellSize') || '4', 10);
-      // Make sure margin is not negative and reasonable default
-      const margin = parseInt(url.searchParams.get('margin') || '0', 10); 
-
-      try {
-        // Create QRCode instance using the global `qrcode` function from the pasted library
-        const qr = qrcode(typeNumber, errorCorrectionLevel); // typeNumber=0 will auto-detect
-        
-        let actualMode = 'Byte'; // Default mode
-        // Simple heuristic for mode selection if needed, or rely on library's auto-detection (which is "Byte" for non-specific data)
-        // 注意：这里的启发式方法可能不完全准确，具体取决于内容的复杂性。
-        // qrcode-generator库在addData时，如果mode不是'Byte'，会尝试解析为特定编码 (如数字、字母数字)。
-        // 对于通用文本，'Byte'通常是最好的选择，它会使用stringToBytesFuncs['UTF-8']进行编码。
-        if (text.match(/^[0-9]*$/)) {
-            actualMode = 'Numeric';
-        } else if (text.match(/^[0-9A-Z $%*+\-./:]*$/)) {
-            actualMode = 'Alphanumeric';
+    async fetch(request, env, ctx) {
+        const url = new URL(request.url);
+        // Serve the HTML landing page for root path
+        if (url.pathname === '/' || url.pathname === '') {
+            return new Response(qrGeneratePageHtml, {
+                headers: { 'content-type': 'text/html;charset=UTF-8' },
+            });
         }
-        qr.addData(text, actualMode);
-        qr.make();
-
-        // Generate Data URL for GIF (the library can ONLY produce GIF data URLs)
-        const dataUrl = qr.createDataURL(cellSize, margin); // default margin is cellSize * 4, use 0 for no margin
-
-        // The createDataURL function in this library actually generates a GIF image.
-        // We need to parse the base64 data and convert it to a Uint8Array.
-        const base64 = dataUrl.split(',')[1];
-        const binary = Uint8Array.from(atob(base64), c => c.charCodeAt(0)); // `atob` is available in Workers
-
-        return new Response(binary, {
-          status: 200,
-          headers: {
-            'content-type': 'image/gif', // IMPORTANT: This library generates GIF, not PNG.
-            'cache-control': 'public, max-age=604800' // Cache for 1 week
-          }
-        });
-      } catch (e) {
-        console.error("QR Code generation error:", e.message || e);
-        // For API requests, return JSON error
-        return new Response(
-          JSON.stringify({ error: 'Failed to generate QR code', details: e.message || e }),
-          { status: 500, headers: { 'content-type': 'application/json' } }
-        );
-      }
+        // Serve the API documentation page
+        if (url.pathname === '/api-docs') {
+            return new Response(apiPageHtmlContent, {
+                headers: { 'content-type': 'text/html;charset=UTF-8' },
+            });
+        }
+        // Serve the QR code image
+        if (url.pathname === '/qr') {
+            const text = url.searchParams.get('text') || url.searchParams.get('url');
+            if (!text) {
+                return new Response(
+                    JSON.stringify({ error: 'Missing `text` or `url` parameter' }),
+                    { status: 400, headers: { 'content-type': 'application/json' } }
+                );
+            }
+            const typeNumber = parseInt(url.searchParams.get('typeNumber') || '0', 10);
+            const errorCorrectionLevel = url.searchParams.get('errorCorrectionLevel') || 'L';
+            const cellSize = parseInt(url.searchParams.get('cellSize') || '4', 10);
+            const margin = parseInt(url.searchParams.get('margin') || '0', 10);
+            try {
+                const qr = qrcode(typeNumber, errorCorrectionLevel);
+                let actualMode = 'Byte';
+                if (text.match(/^[0-9]*$/)) {
+                    actualMode = 'Numeric';
+                } else if (text.match(/^[0-9A-Z $%*+\-./:]*$/)) {
+                    actualMode = 'Alphanumeric';
+                }
+                qr.addData(text, actualMode);
+                qr.make();
+                const dataUrl = qr.createDataURL(cellSize, margin);
+                const base64 = dataUrl.split(',')[1];
+                const binary = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+                return new Response(binary, {
+                    status: 200,
+                    headers: {
+                        'content-type': 'image/gif',
+                        'cache-control': 'public, max-age=604800' // Cache for 1 week
+                    }
+                });
+            } catch (e) {
+                console.error("QR Code generation error:", e.message || e);
+                return new Response(
+                    JSON.stringify({ error: 'Failed to generate QR code', details: e.message || e }),
+                    { status: 500, headers: { 'content-type': 'application/json' } }
+                );
+            }
+        }
+        // For any other path, return a 404
+        return new Response('Not Found', { status: 404 });
     }
-
-    // For any other path, return a 404
-    return new Response('Not Found', { status: 404 });
-  }
 };
