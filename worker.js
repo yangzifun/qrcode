@@ -2299,60 +2299,6 @@ var qrcode = function() {
 // ---------------------------------------------------------------------
 // qrcode-generator Library End
 // =====================================================================
-
-
-// =====================================================================
-// qrcode-generator Library Start
-// 将你提供的 qrcode-generator.js 的所有内容粘贴到这里
-// 注意：原文件末尾的模块导出代码需要删除或注释掉
-// ---------------------------------------------------------------------
-
-// ... (粘贴 qrcode-generator 库的全部代码，直到 multibyte support 部分结束) ...
-
-
-// multibyte support - 确保这部分也包含在粘贴的代码中
-!function() {
-
-  qrcode.stringToBytesFuncs['UTF-8'] = function(s) {
-    // http://stackoverflow.com/questions/18729405/how-to-convert-utf8-string-to-byte-array
-    function toUTF8Array(str) {
-      var utf8 = [];
-      for (var i=0; i < str.length; i++) {
-        var charcode = str.charCodeAt(i);
-        if (charcode < 0x80) utf8.push(charcode);
-        else if (charcode < 0x800) {
-          utf8.push(0xc0 | (charcode >> 6),
-              0x80 | (charcode & 0x3f));
-        }
-        else if (charcode < 0xd800 || charcode >= 0xe000) {
-          utf8.push(0xe0 | (charcode >> 12),
-              0x80 | ((charcode>>6) & 0x3f),
-              0x80 | (charcode & 0x3f));
-        }
-        // surrogate pair
-        else {
-          i++;
-          // UTF-16 encodes 0x10000-0x10FFFF by
-          // subtracting 0x10000 and splitting the
-          // 20 bits of 0x0-0xFFFFF into two halves
-          charcode = 0x10000 + (((charcode & 0x3ff)<<10)
-            | (str.charCodeAt(i) & 0x3ff));
-          utf8.push(0xf0 | (charcode >>18),
-              0x80 | ((charcode>>12) & 0x3f),
-              0x80 | ((charcode>>6) & 0x3f),
-              0x80 | (charcode & 0x3f));
-        }
-      }
-      return utf8;
-    };
-    return toUTF8Array(s);
-  };
-
-}();
-
-// ---------------------------------------------------------------------
-// qrcode-generator Library End
-// =====================================================================
 // =================================================================
 //  GLOBAL UI COMPONENTS & UTILITIES (从你的 All-in-One Proxy Tool 复制)
 // =================================================================
@@ -2499,7 +2445,7 @@ textarea:focus, input[type="text"]:focus, input[type="number"]:focus, select:foc
     @keyframes slideDown {
       from { opacity: 0; transform: translateY(-100%); }
       to { opacity: 1; transform: translateY(0); }
-    }
+		}
 		/* 覆盖原有的fadeOut动画，使其从当前位置消失 */
 		@keyframes fadeOut {
       from { opacity: 1; }
@@ -2548,7 +2494,9 @@ const qrGeneratePageHtml = `
             <p class="profile-quote">输入内容，即时生成 GIF 格式的二维码。</p>
             <div class="nav-grid">
                 <a href="/" class="nav-btn primary">二维码生成</a>
-                <a href="/api-docs" class="nav-btn">API 文档</a>
+                <!-- START: MODIFIED LINE -->
+                <a href="https://bbs.yangzihome.space/archives/qrcode-api" class="nav-btn" target="_blank">API 文档</a>
+                <!-- END: MODIFIED LINE -->
             </div>
             <div class="card">
                 <h2>1. 输入内容</h2>
@@ -2720,176 +2668,6 @@ const qrGeneratePageHtml = `
 </body>
 </html>
 `;
-// API 使用说明页面 HTML
-const apiPageHtmlContent = `
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="utf-8">
-    <title>二维码生成器 - API 文档</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="https://s3.yangzihome.space/logo.ico" type="image/x-icon">
-    <style>${newGlobalStyle}</style>
-    <style>
-        .api-docs-content pre {
-            background-color: #eee;
-            border: 1px solid #ddd;
-            padding: 10px;
-            border-radius: 4px;
-            overflow-x: auto;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            font-family: 'SF Mono', 'Courier New', monospace;
-            font-size: 0.9em;
-            color: #3d474d;
-        }
-        .api-docs-content table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            font-size: 0.9em;
-        }
-        .api-docs-content th, .api-docs-content td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        .api-docs-content th {
-            background-color: #f2f2f2;
-            font-weight: bold;
-        }
-        .api-docs-content code {
-            background-color: #eaeaea;
-            padding: 2px 4px;
-            border-radius: 3px;
-            font-family: 'SF Mono', 'Courier New', monospace;
-        }
-        .important-note {
-            color: #d9534f;
-            font-weight: bold;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="content-group">
-            <h1 class="profile-name">二维码生成器 API 文档</h1>
-            <p class="profile-quote">通过 HTTP 请求程序化生成高质量 GIF 格式二维码。</p>
-            <div class="nav-grid">
-                <a href="/" class="nav-btn">二维码生成</a>
-                <a href="/api-docs" class="nav-btn primary">API 文档</a>
-            </div>
-            <div class="card api-docs-content">
-                <h2>API 端点</h2>
-                <p>二维码生成服务的基础 URL：</p>
-                <pre><code>https://<span class="worker-domain-placeholder">your-worker-domain.com</span>/qr</code></pre>
-                <h2>请求方法</h2>
-                <p><code>GET</code></p>
-                <h2>查询参数</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>参数名</th>
-                            <th>是否必须</th>
-                            <th>类型</th>
-                            <th>默认值</th>
-                            <th>说明</th>
-                            <th>合法值范围</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><code>text</code> 或 <code>url</code></td>
-                            <td>**是**</td>
-                            <td>String</td>
-                            <td>无</td>
-                            <td>要编码的文本内容或 URL。<strong>请务必进行 URL 编码 (<code>encodeURIComponent</code>)</strong>。</td>
-                            <td>任何字符串</td>
-                        </tr>
-                        <tr>
-                            <td><code>cellSize</code></td>
-                            <td>否</td>
-                            <td>Integer</td>
-                            <td><code>4</code></td>
-                            <td>每个二维码“模块”（小方块）的像素大小。值越大，生成的图片尺寸越大。</td>
-                            <td><code>1</code> 到 <code>20</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>margin</code></td>
-                            <td>否</td>
-                            <td>Integer</td>
-                            <td><code>0</code></td>
-                            <td>二维码图案周围的空白边距，以模块数量为单位。<code>0</code> 表示无额外边距。</td>
-                            <td><code>0</code> 到 <code>10</code></td>
-                        </tr>
-                        <tr>
-                            <td><code>errorCorrectionLevel</code></td>
-                            <td>否</td>
-                            <td>String</td>
-                            <td><code>L</code></td>
-                            <td>二维码的容错级别，指定二维码可被损坏或遮挡而仍然可扫描的程度。</td>
-                            <td><code>'L'</code> (低), <code>'M'</code> (中), <code>'Q'</code> (大部分), <code>'H'</code> (高)</td>
-                        </tr>
-                        <tr>
-                            <td><code>typeNumber</code></td>
-                            <td>否</td>
-                            <td>Integer</td>
-                            <td><code>0</code></td>
-                            <td>二维码的版本号 (<code>1</code> 到 <code>40</code>)。<code>0</code> 表示由 API 自动选择最小的、能容纳所有数据的版本号。</td>
-                            <td><code>0</code> 到 <code>40</code></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <h2>响应</h2>
-                <ul>
-                    <li>**成功**: 返回 <code>image/gif</code> 类型的 GIF 格式二维码图片。</li>
-                    <li>**失败**: 返回 <code>application/json</code> 类型的错误信息。</li>
-                </ul>
-                <h3>成功响应示例 (HTTP 200 OK)</h3>
-                <p>请求：</p>
-                <pre><code>GET https://<span class="worker-domain-placeholder">your-worker-domain.com</span>/qr?text=Hello%20API!</code></pre>
-                <p>响应：</p>
-                <pre><code>Content-Type: image/gif
-(Binary GIF image data)</code></pre>
-                <img src="/qr?text=Hello%20API!&cellSize=4&margin=4&errorCorrectionLevel=M" alt="API示例二维码" style="max-width: 200px; height: auto;" />
-                <p><em>上图为使用参数 <code>text=Hello%20API!&cellSize=4&margin=4&errorCorrectionLevel=M</code> 生成的示例。</em></p>
-                <h3>错误响应示例 (HTTP 400 Bad Request)</h3>
-                <p>请求：</p>
-                <pre><code>GET https://<span class="worker-domain-placeholder">your-worker-domain.com</span>/qr</code></pre>
-                <p>响应：</p>
-                <pre><code>HTTP/1.1 400 Bad Request
-Content-Type: application/json
-{
-  "error": "Missing \`text\` or \`url\` parameter"
-}</code></pre>
-                <h3>错误响应示例 (HTTP 500 Internal Server Error)</h3>
-                <p>如果二维码生成过程中发生内部错误 (例如，尝试编码的数据过大导致超出二维码容量)，可能会返回 500 错误：</p>
-                <pre><code>HTTP/1.1 500 Internal Server Error
-Content-Type: application/json
-{
-  "error": "Failed to generate QR code",
-  "details": "code length overflow. (too much data)"
-}</code></pre>
-                <h2>缓存</h2>
-                <p>成功的二维码图片响应会包含 <code>Cache-Control: public, max-age=604800</code> 头，表示图片将在浏览器和 CDN 边缘缓存 7 天（604800 秒），以提高性能并减少 Workers 的调用次数。</p>
-            </div>
-            <footer class="footer">
-                <p>Powered by YZFN | <a href="https://www.yangzihome.space/security-statement" target="_blank" rel="noopener noreferrer">安全声明</a></p>
-            </footer>
-        </div>
-    </div>
-    <script>
-        // 在页面加载后填充 Worker 域名到占位符
-        window.addEventListener('load', () => {
-            const workerDomain = window.location.origin;
-            document.querySelectorAll('.worker-domain-placeholder').forEach(el => {
-                el.textContent = workerDomain.replace('http://', '').replace('https://', '');
-            });
-        });
-    </script>
-</body>
-</html>
-`;
 // Cloudflare Worker API Handler
 export default {
     async fetch(request, env, ctx) {
@@ -2900,12 +2678,13 @@ export default {
                 headers: { 'content-type': 'text/html;charset=UTF-8' },
             });
         }
-        // Serve the API documentation page
-        if (url.pathname === '/api-docs') {
-            return new Response(apiPageHtmlContent, {
-                headers: { 'content-type': 'text/html;charset=UTF-8' },
-            });
-        }
+        // 以下是已注释掉的 API docs 路由处理，符合您的“移除”要求。
+        // if (url.pathname === '/api-docs') {
+        //     return new Response(apiPageHtmlContent, {
+        //         headers: { 'content-type': 'text/html;charset=UTF-8' },
+        //     });
+        // }
+
         // Serve the QR code image
         if (url.pathname === '/qr') {
             const text = url.searchParams.get('text') || url.searchParams.get('url');
@@ -2951,3 +2730,4 @@ export default {
         return new Response('Not Found', { status: 404 });
     }
 };
+
